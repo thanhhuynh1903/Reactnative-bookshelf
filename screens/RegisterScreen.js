@@ -16,14 +16,23 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleLogin = async () => {
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const handleRegister = async () => {
     if (email && password && confirmPassword) {
-      if(password === confirmPassword) {
+      if (!validateEmail(email)) {
+        Alert.alert('Error', 'Please enter a valid email address');
+        return;
+      }
+      if (password === confirmPassword) {
         try {
           await AsyncStorage.setItem('userToken', 'dummy-token');
           navigation.replace('MainApp');
         } catch (error) {
-          Alert.alert('Error', 'Failed to login');
+          Alert.alert('Error', 'Failed to register');
         }
       } else {
         Alert.alert('Error', 'Passwords do not match');
@@ -67,7 +76,7 @@ const RegisterScreen = ({ navigation }) => {
         />
         <TouchableOpacity 
           style={styles.button}
-          onPress={handleLogin}
+          onPress={handleRegister}
         >
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
